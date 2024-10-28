@@ -15,6 +15,8 @@ Example Use Case:
 """
 from typing import TypeVar
 
+from infrastructure.settings import settings
+
 _F = TypeVar('_F', bound='FileEntity')
 _T = TypeVar('_T', bound='FileRepository')
 _N = TypeVar('_N', bound='ProgressNotifier')
@@ -35,7 +37,7 @@ class FileService:
         progress_notifier: The progress notifier instance that communicates upload progress.
     """
 
-    UPLOAD_RANGE = 10  # The number of chunks to divide the file into during upload.
+    UPLOAD_RANGE = settings.NUMBER_UPLOAD_CHUNK  # The number of chunks to divide the file into during upload.
 
     def __init__(self, file_repo: _T, progress_notifier: _N):
         """
