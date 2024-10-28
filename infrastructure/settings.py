@@ -19,6 +19,9 @@ class Settings:
         default_db_path = os.path.join(project_root, "db.sqlite3")
         print(default_db_path, "\n")
         self.DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{default_db_path}")
+        # include project settings here
+        self.NUMBER_UPLOAD_CHUNK = os.getenv("NUMBER_UPLOAD_CHUNK", 10)
+        self.TRACE_MEMORY_ALLOCATION_PER_FRAME = os.getenv("TRACE_MEMORY_ALLOCATION_PER_FRAME", 20)
 
 
 
