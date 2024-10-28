@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 class Settings:
     """
@@ -10,7 +11,28 @@ class Settings:
     """
 
     def __init__(self):
-        self.DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://user:password@localhost/dbname")
+        load_dotenv()
+
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        print(project_root, "\n")
+        # Use SQLite as the default database
+        default_db_path = os.path.join(project_root, "db.sqlite3")
+        print(default_db_path, "\n")
+        self.DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{default_db_path}")
+
+
 
 # Create a global settings instance
 settings = Settings()
+
+TORTOISE_ORM = {
+    "connections": {
+        "default": settings.DATABASE_URL
+    },
+    "apps": {
+        "models": {
+            "models": ["infrastructure.models.file_model", "aerich.models"],
+            "default_connection": "default",
+        }
+    }
+}
