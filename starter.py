@@ -1,14 +1,26 @@
 import tornado.ioloop
 import tornado.web
+import tracemalloc
+
+from tortoise import Tortoise, run_async
 
 from application.upload_use_case import UploadUseCase
+from infrastructure.adapters.db_file_repository import DBFile
+from infrastructure.settings import TORTOISE_ORM
 from infrastructure.web.handlers.file_upload_handler import FileUploadHandler
 from infrastructure.web.handlers.websocket_handler import ProgressWebSocketHandler
-from infrastructure.adapters.file_repository import FileRepository
 from infrastructure.adapters.websocket_progress_notifier import WebSocketProgressNotifier
 
+# Start tracing memory allocations, storing up to 10 frames per allocation
+tracemalloc.start(10)
+
+async def db_init():
+    await Tortoise.init(config=TORTOISE_ORM)
+    await Tortoise.generate_schemas()
+
+
 def app():
-    file_repo = FileRepository()
+    file_repo = DBFile()
     progress_notifier = WebSocketProgressNotifier(ProgressWebSocketHandler)
     upload_use_case = UploadUseCase(file_repo, progress_notifier)
 
@@ -25,6 +37,7 @@ def app():
     ])
 
 if __name__ == "__main__":
+    run_async(db_init())
     app = app()
     app.listen(8888)
     print("Tornado server started on http://localhost:8888")

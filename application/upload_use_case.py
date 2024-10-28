@@ -16,6 +16,14 @@ Example Use Case:
 """
 
 from domain.service import FileService
+from typing import TYPE_CHECKING, TypeVar
+
+if TYPE_CHECKING:
+    from domain.entity import FileEntity
+
+# Define a type variable for flexibility with different types of repositories and notifiers.
+T = TypeVar('T', bound='FileRepository')
+N = TypeVar('N', bound='ProgressNotifier')
 
 
 class UploadUseCase:
@@ -33,7 +41,7 @@ class UploadUseCase:
                                     and progress notifications.
     """
 
-    def __init__(self, file_repo, progress_notifier):
+    def __init__(self, file_repo: T, progress_notifier: N) -> None:
         """
         Initialize the UploadUseCase with the necessary dependencies.
 
@@ -43,7 +51,7 @@ class UploadUseCase:
         """
         self.file_service = FileService(file_repo, progress_notifier)
 
-    def execute(self, file_entity):
+    async def execute(self, file_entity: 'FileEntity'):
         """
         Execute the file upload use case by delegating the file upload process
         to the FileService. This method is responsible for handling the
@@ -54,4 +62,4 @@ class UploadUseCase:
             file_entity (FileEntity): The file entity containing the file's metadata and content
                                       that needs to be uploaded.
         """
-        self.file_service.upload_file(file_entity)
+        await self.file_service.upload_file(file_entity)

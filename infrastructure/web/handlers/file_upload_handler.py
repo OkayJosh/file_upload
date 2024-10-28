@@ -15,6 +15,8 @@ Example Use Case:
 """
 
 import tornado.web
+
+from application.upload_use_case import UploadUseCase
 from domain.entity import FileEntity
 from infrastructure.web.serializers import FileUploadSchema
 
@@ -37,7 +39,7 @@ class FileUploadHandler(tornado.web.RequestHandler):
     HTTP_BAD_REQUEST = 400
     HTTP_INTERNAL_SERVER_ERROR = 500
 
-    def initialize(self, upload_use_case):
+    def initialize(self, upload_use_case: UploadUseCase) -> None:
         """
         Initializes the FileUploadHandler with the necessary upload use case.
 
@@ -47,14 +49,14 @@ class FileUploadHandler(tornado.web.RequestHandler):
         """
         self.upload_use_case = upload_use_case
 
-    def set_default_headers(self):
+    def set_default_headers(self) -> None:
         """
         Sets default headers to ensure all responses are returned as JSON.
         This method ensures that the 'Content-Type' header is set to 'application/json'.
         """
         self.set_header("Content-Type", "application/json")
 
-    def write_error(self, status_code, **kwargs):
+    def write_error(self, status_code: int, **kwargs) -> None:
         """
         Custom error handler to return errors in JSON format.
 
@@ -77,11 +79,11 @@ class FileUploadHandler(tornado.web.RequestHandler):
         else:
             self.finish({
                 "status": "error",
-                # Tornado's default reason for the status code
+                "error": kwargs.get("error"),
                 "message": self._reason
             })
 
-    def post(self):
+    async def post(self) -> None:
         """
         Handles file uploads via POST requests. The method extracts the uploaded file,
         processes it using the FileEntity class, and executes the corresponding use case
@@ -105,7 +107,7 @@ class FileUploadHandler(tornado.web.RequestHandler):
             file_entity = FileEntity(validated_data.filename, validated_data.content)
 
             # Execute the upload use case to handle the file storage process
-            self.upload_use_case.execute(file_entity)
+            await self.upload_use_case.execute(file_entity)
 
             # Respond with success message in JSON format
             self.set_status(self.HTTP_OK)
@@ -116,8 +118,8 @@ class FileUploadHandler(tornado.web.RequestHandler):
 
         except KeyError as exception:
             # Handle missing file key in the request
-            self.send_error(self.HTTP_BAD_REQUEST, **exception.__dict__)
+            self.send_error(self.HTTP_BAD_REQUEST, error=exception.args[0])
 
         except Exception as exception:
             # Handle any other exceptions during the file upload process
-            self.send_error(self.HTTP_INTERNAL_SERVER_ERROR, **exception.__dict__)
+            self.send_error(self.HTTP_INTERNAL_SERVER_ERROR, error=exception.args[0])

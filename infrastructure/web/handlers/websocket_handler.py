@@ -11,10 +11,10 @@ to send messages to all connected clients, ensuring they receive updates promptl
 Example Use Case:
     - Providing real-time feedback to users about the progress of file uploads through WebSocket connections.
 """
+from tornado.websocket import WebSocketHandler
 
-import tornado.websocket
 
-class ProgressWebSocketHandler(tornado.websocket.WebSocketHandler):
+class ProgressWebSocketHandler(WebSocketHandler):
     """
     ProgressWebSocketHandler manages WebSocket connections for real-time progress updates.
 
