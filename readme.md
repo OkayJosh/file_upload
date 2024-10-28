@@ -32,7 +32,7 @@ This project is structured based on **Ports and Adapters** (Hexagonal Architectu
 
 - **Domain Layer**: Contains the business logic (e.g., `FileEntity`).
 - **Application Layer**: Implements use cases (e.g., `UploadUseCase`) that use the ports.
-- **Adapters Layer (Infrastructure)**: Contains the actual implementations (e.g., `SQLAlchemyFileRepository`) of the ports, dealing with database access, WebSocket connections, etc.
+- **Adapters Layer (Infrastructure)**: Contains the actual implementations (e.g., `File`) of the ports, dealing with database access, WebSocket connections, etc.
 - **Ports**: Define the boundaries between the application layer and the outer layers, such as the database or WebSockets.
 
 ## Features
