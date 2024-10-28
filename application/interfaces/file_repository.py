@@ -1,10 +1,12 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
+
 from domain.entity import FileEntity
 
-class FileRepositoryPort(ABC):
+
+class FileRepository(Protocol):
     """
-    FileRepositoryPort is an abstract base class (ABC) that defines the contract for
-    file repository implementations. It acts as a port in the ports and adapters
+    FileRepository defines an interface for file repository Implementation.
+    It acts as a port in the interfaces and adapters
     pattern, providing an interface that different storage mechanisms (e.g., local
     storage, cloud storage like S3) must implement.
 
@@ -15,12 +17,11 @@ class FileRepositoryPort(ABC):
     mechanisms without being tied to a specific storage implementation.
     """
 
-    @abstractmethod
-    def save_file_chunk(self, file_entity: FileEntity, offset: int, chunk_size: int):
+    def save_file_chunk(self, file_entity: FileEntity, offset: int, chunk_size: int) -> None:
         """
-        Abstract method for saving a chunk of a file to the repository.
+        Save a chunk of a file to the repository.
 
-        This method must be implemented by any class that inherits from FileRepositoryPort.
+        This method must be implemented by any class that inherits from FileRepository.
         It is responsible for saving part of a file, starting at a specific offset, with a
         defined chunk size. This allows the file to be uploaded or saved in multiple chunks,
         improving memory efficiency for large files.
@@ -33,4 +34,4 @@ class FileRepositoryPort(ABC):
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
         """
-        pass
+        ...
