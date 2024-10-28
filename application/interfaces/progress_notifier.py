@@ -1,12 +1,12 @@
 """
 Module: progress_notifier_port
 
-This module defines the `ProgressNotifierPort` class, which is an abstract base class
+This module defines the `ProgressNotifier` class, which is an abstract base class
 that serves as a port for notifying the progress of operations, such as file uploads or
 downloads. The class defines an interface that different progress notification mechanisms
 (e.g., WebSocket, HTTP, or any other communication channel) must implement.
 
-This module is part of the ports and adapters pattern, providing an abstraction for
+This module is part of the interfaces and adapters pattern, providing an abstraction for
 notifying progress updates, allowing the application to send progress updates
 without being tightly coupled to a specific implementation.
 
@@ -14,12 +14,13 @@ Example Use Case:
     - A WebSocket notifier that sends file upload progress to clients in real-time.
     - A logging-based notifier that logs progress to a file or console.
 """
-from abc import ABC, abstractmethod
+from typing import Protocol
 
-class ProgressNotifierPort(ABC):
+
+class ProgressNotifier(Protocol):
     """
-    ProgressNotifierPort is an abstract base class (ABC) that defines the contract for
-    notifying progress updates. It serves as a port in the ports and adapters pattern,
+    ProgressNotifier is an abstract base class (ABC) that defines the contract for
+    notifying progress updates. It serves as a port in the interfaces and adapters pattern,
     allowing different progress notification mechanisms (e.g., WebSocket, HTTP, logging)
     to be implemented without changing the core business logic.
 
@@ -28,12 +29,11 @@ class ProgressNotifierPort(ABC):
     decoupled manner.
     """
 
-    @abstractmethod
     def notify_progress(self, progress: str):
         """
-        Abstract method for notifying progress updates.
+        Notify Progress updates.
 
-        This method must be implemented by any class that inherits from ProgressNotifierPort.
+        This method must be implemented by any class that inherits from ProgressNotifier.
         It is responsible for sending a progress update, typically represented as a string.
         The progress information can be used to inform clients, systems, or logs about the
         current status of a task.
@@ -44,4 +44,4 @@ class ProgressNotifierPort(ABC):
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
         """
-        pass
+        ...
