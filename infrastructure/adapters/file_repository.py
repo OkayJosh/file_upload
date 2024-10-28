@@ -2,11 +2,11 @@
 Module: file_repository
 
 This module defines the `FileRepository` class, which implements the
-`FileRepositoryPort` interface for managing file storage in the local file system.
+`FileRepository` interface for managing file storage in the local file system.
 The `FileRepository` is responsible for saving file chunks to a specified upload
 directory and ensuring that the directory exists before performing any file operations.
 
-This implementation follows the ports and adapters architecture, allowing the
+This implementation follows the interfaces and adapters architecture, allowing the
 application to interact with the file system through an abstract interface.
 
 Example Use Case:
@@ -16,14 +16,14 @@ Example Use Case:
 
 import os
 
-from application.ports.file_repository import FileRepositoryPort
+from application.interfaces.file_repository import FileRepository
 from domain.entity import FileEntity
 
 UPLOAD_DIR = "uploads"  # Directory where uploaded files will be stored.
 
-class FileRepository(FileRepositoryPort):
+class File(FileRepository):
     """
-    FileRepository is an implementation of the FileRepositoryPort interface,
+    FileRepository is an implementation of the FileRepository interface,
     providing methods for saving file chunks to the local file system. This class
     manages the file storage operations and ensures that the required upload directory
     is created if it does not exist.
