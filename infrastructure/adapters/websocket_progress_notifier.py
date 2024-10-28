@@ -2,7 +2,7 @@
 Module: websocket_progress_notifier
 
 This module defines the `WebSocketProgressNotifier` class, which implements the
-`ProgressNotifierPort` interface for sending progress updates through a WebSocket connection.
+`ProgressNotifier` interface for sending progress updates through a WebSocket connection.
 The `WebSocketProgressNotifier` is responsible for notifying clients about the status
 of file uploads or any other processes that require progress reporting.
 
@@ -13,12 +13,16 @@ Example Use Case:
     - Notifying users about the progress of file uploads in real time using WebSocket connections,
       allowing for a more interactive user experience.
 """
+from tornado.websocket import WebSocketHandler
+from typing_extensions import TypeVar, Type
 
-from application.ports.progress_notifier import ProgressNotifierPort
+from application.interfaces.progress_notifier import ProgressNotifier
 
-class WebSocketProgressNotifier(ProgressNotifierPort):
+_T = TypeVar('_T', bound=WebSocketHandler)
+
+class WebSocketProgressNotifier(ProgressNotifier):
     """
-    WebSocketProgressNotifier is an implementation of the ProgressNotifierPort interface,
+    WebSocketProgressNotifier is an implementation of the ProgressNotifier interface,
     providing methods to notify clients of progress updates via a WebSocket connection.
 
     This class takes a WebSocket handler as a dependency and uses it to send progress
@@ -29,7 +33,7 @@ class WebSocketProgressNotifier(ProgressNotifierPort):
                     and sending messages to clients.
     """
 
-    def __init__(self, ws_handler):
+    def __init__(self, ws_handler: Type[_T]) -> None:
         """
         Initialize the WebSocketProgressNotifier with the specified WebSocket handler.
 
@@ -39,7 +43,7 @@ class WebSocketProgressNotifier(ProgressNotifierPort):
         """
         self.ws_handler = ws_handler
 
-    def notify_progress(self, progress: str):
+    def notify_progress(self, progress: str) -> None:
         """
         Send a progress update to clients connected via WebSocket.
 
